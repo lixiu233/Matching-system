@@ -1,16 +1,14 @@
 package com.ldy.usercenter.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ldy.usercenter.common.BaseResponse;
 import com.ldy.usercenter.common.ErrorCode;
 import com.ldy.usercenter.common.ResulUtils;
-import com.ldy.usercenter.contant.UserConstant;
 import com.ldy.usercenter.exception.BusinessException;
 import com.ldy.usercenter.model.domain.User;
-import com.ldy.usercenter.model.domain.request.UserLoginRequest;
-import com.ldy.usercenter.model.domain.request.UserRegisterRequest;
+import com.ldy.usercenter.model.request.UserLoginRequest;
+import com.ldy.usercenter.model.request.UserRegisterRequest;
 import com.ldy.usercenter.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,7 +32,7 @@ import static com.ldy.usercenter.contant.UserConstant.SUER_LOGIN_STATE;
  *
  * @author LDY
  */
-@Api(tags = "开始模块")
+@Api(tags = "用户模块")
 @RestController
 @RequestMapping("/user")
 @Slf4j
@@ -174,6 +172,5 @@ public class UserController {
         int i = userService.updateUser(user, loginUser);
         return ResulUtils.success(i);
     }
-
 
 }

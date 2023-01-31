@@ -5,9 +5,9 @@ spring:
     name: ldy-center
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ldy
+    url: jdbc:mysql://localhost:3306/ldy?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: root
-    password: **********
+    password: Ldy200825_
   # session 失效时间
   session:
     timeout: 86400

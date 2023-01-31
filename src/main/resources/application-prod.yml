@@ -3,8 +3,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: 'jdbc:mysql://120.76.72.31:3306/mydb?useSSL=false'
-    username: ****
-    password: ***********
+    username: root
+    password: Ldy_200825_liake
   # session 失效时间
   session:
     timeout: 86400

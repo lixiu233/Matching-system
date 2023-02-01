@@ -9,6 +9,7 @@ import com.ldy.usercenter.model.domain.User;
 import com.ldy.usercenter.model.domain.UserTeam;
 import com.ldy.usercenter.model.dto.TeamQuery;
 import com.ldy.usercenter.model.enums.TeamStatusEnum;
+import com.ldy.usercenter.model.request.TeamUpdateRequest;
 import com.ldy.usercenter.model.vo.TeamUserVO;
 import com.ldy.usercenter.model.vo.UserVO;
 import com.ldy.usercenter.service.TeamService;
@@ -174,7 +175,34 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
         return teamUserVOList;
     }
 
-
+    @Override
+    public boolean upDateTeam(TeamUpdateRequest teamUpdateRequest, User loginUser) {
+        if (teamUpdateRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        Long id = teamUpdateRequest.getId();
+        if (id == null && id < 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        Team oldTeam = this.getById(id);
+        if (oldTeam == null) {
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+        }
+        if (!oldTeam.getUserId().equals(loginUser.getId()) && !userService.isAdmin(loginUser)) {
+            throw new BusinessException(ErrorCode.NO_AUTO);
+        }
+        Team team = new Team();
+        team.setName(teamUpdateRequest.getName());
+        team.setDescription(teamUpdateRequest.getDescription());
+        team.setExpireTime(teamUpdateRequest.getExpireTime());
+        team.setStatus(teamUpdateRequest.getStatus());
+        team.setPassword(teamUpdateRequest.getPassword());
+        if (team.equals(oldTeam)) {
+            return true;
+        }
+        BeanUtils.copyProperties(teamUpdateRequest, oldTeam);
+        return this.updateById(oldTeam);
+    }
 }
 
 

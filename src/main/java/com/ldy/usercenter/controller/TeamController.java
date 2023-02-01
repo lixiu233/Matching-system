@@ -7,9 +7,11 @@ import com.ldy.usercenter.common.ErrorCode;
 import com.ldy.usercenter.common.ResulUtils;
 import com.ldy.usercenter.exception.BusinessException;
 import com.ldy.usercenter.model.domain.Team;
+import com.ldy.usercenter.model.domain.User;
 import com.ldy.usercenter.model.dto.TeamQuery;
 import com.ldy.usercenter.model.request.PageRequest;
 import com.ldy.usercenter.model.request.TeamAddRequest;
+import com.ldy.usercenter.model.request.TeamUpdateRequest;
 import com.ldy.usercenter.model.vo.TeamUserVO;
 import com.ldy.usercenter.service.TeamService;
 import com.ldy.usercenter.service.UserService;
@@ -62,15 +64,16 @@ public class TeamController {
     }
 
     @PostMapping("/update")
-    public BaseResponse<Team> update(@RequestBody Team team){
-        if (team == null){
+    public BaseResponse<Boolean> update(@RequestBody TeamUpdateRequest teamUpdateRequest, HttpServletRequest request){
+        if (teamUpdateRequest == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        boolean b = teamService.updateById(team);
+        User loginUser = userService.getLoginUser(request);
+        boolean b = teamService.upDateTeam(teamUpdateRequest, loginUser);
         if (!b) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "修改失败");
         }
-        return ResulUtils.success(team);
+        return ResulUtils.success(true);
     }
 
     @GetMapping("/get")

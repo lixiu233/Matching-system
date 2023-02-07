@@ -11,6 +11,7 @@ import com.ldy.usercenter.model.domain.User;
 import com.ldy.usercenter.model.dto.TeamQuery;
 import com.ldy.usercenter.model.request.PageRequest;
 import com.ldy.usercenter.model.request.TeamAddRequest;
+import com.ldy.usercenter.model.request.TeamJoinRequest;
 import com.ldy.usercenter.model.request.TeamUpdateRequest;
 import com.ldy.usercenter.model.vo.TeamUserVO;
 import com.ldy.usercenter.service.TeamService;
@@ -18,7 +19,6 @@ import com.ldy.usercenter.service.UserService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -51,12 +51,13 @@ public class TeamController {
         return ResulUtils.success(team.getId());
     }
 
-    @PostMapping("/delete")
-    public BaseResponse<Boolean> delete(@RequestBody long id){
-        if (id <= 0){
+    @PostMapping("/quitTeam")
+    public BaseResponse<Boolean> quitTeam(@RequestBody long teamId, HttpServletRequest request){
+        if (teamId <= 0){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        boolean remove = teamService.removeById(id);
+        User loginUser = userService.getLoginUser(request);
+        boolean remove = teamService.quitTeam(teamId,loginUser);
         if (!remove) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "退出失败");
         }
@@ -72,6 +73,19 @@ public class TeamController {
         boolean b = teamService.upDateTeam(teamUpdateRequest, loginUser);
         if (!b) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "修改失败");
+        }
+        return ResulUtils.success(true);
+    }
+
+    @PostMapping("/join")
+    public BaseResponse<Boolean> joinTeam(@RequestBody TeamJoinRequest teamJoinRequest, HttpServletRequest request){
+        if (teamJoinRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User loginUser = userService.getLoginUser(request);
+        boolean b = teamService.joinTeam(teamJoinRequest, loginUser);
+        if (!b) {
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "连接失败");
         }
         return ResulUtils.success(true);
     }
